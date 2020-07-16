@@ -1590,6 +1590,12 @@ bool open_table(THD *thd, TABLE_LIST *table_list, Open_table_context *ot_ctx)
   if (!(flags & MYSQL_OPEN_IGNORE_KILLED) && thd->killed)
   {
     thd->send_kill_message();
+    /*
+       Query was only aborted, but this is not an actual error.
+       So return false.
+    */
+    if (thd->killed == ABORT_QUERY)
+      DBUG_RETURN(FALSE);
     DBUG_RETURN(TRUE);
   }
 

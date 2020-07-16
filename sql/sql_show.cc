@@ -5622,6 +5622,16 @@ static int get_schema_column_record(THD *thd, TABLE_LIST *tables,
     }
     DBUG_RETURN(res);
   }
+  /*
+    Query was aborted. This could be because of number of
+    examined rows exceeded LIMIT ROWS EXAMINED. But don't
+    issue warning here. It is done later, in handle_select().
+  */
+  if(thd->killed == ABORT_QUERY)
+  {
+    res= 0;
+    DBUG_RETURN(res);
+  }
 
   show_table= tables->table;
   count= 0;
