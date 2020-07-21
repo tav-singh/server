@@ -123,6 +123,7 @@ struct st_plugin_int
 
 
 extern mysql_mutex_t LOCK_plugin;
+struct st_plugins_state;
 
 /*
   See intern_plugin_lock() for the explanation for the
@@ -165,7 +166,13 @@ extern const char *plugin_maturity_names[];
 extern int plugin_init(int *argc, char **argv, int init_flags);
 extern void plugin_shutdown(void);
 void add_plugin_options(DYNAMIC_ARRAY *options, MEM_ROOT *mem_root);
-extern bool plugin_is_ready(const LEX_CSTRING *name, int type);
+extern bool plugin_is_ready(THD *thd, const LEX_CSTRING *name, int type);
+
+/*
+  The plugin_is_ready_gl is only to be called before any
+  connection is started, or the LOCK_plugin is locked.
+*/
+extern bool plugin_is_ready_gl(const LEX_CSTRING *name, int type);
 #define my_plugin_lock_by_name(A,B,C) plugin_lock_by_name(A,B,C)
 #define my_plugin_lock(A,B) plugin_lock(A,B)
 extern plugin_ref plugin_lock(THD *thd, plugin_ref ptr);
@@ -182,7 +189,6 @@ extern void plugin_thdvar_init(THD *thd);
 extern void plugin_thdvar_cleanup(THD *thd);
 sys_var *find_plugin_sysvar(st_plugin_int *plugin, st_mysql_sys_var *var);
 void plugin_opt_set_limits(struct my_option *, const struct st_mysql_sys_var *);
-extern SHOW_COMP_OPTION plugin_status(const char *name, size_t len, int type);
 extern bool check_valid_path(const char *path, size_t length);
 extern void plugin_mutex_init();
 

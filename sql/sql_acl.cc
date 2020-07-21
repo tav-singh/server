@@ -4439,7 +4439,7 @@ static int replace_user_table(THD *thd, const User_table &user_table,
     nauth++;
     if (auth->plugin.length)
     {
-      if (!plugin_is_ready(&auth->plugin, MYSQL_AUTHENTICATION_PLUGIN))
+      if (!plugin_is_ready(thd, &auth->plugin, MYSQL_AUTHENTICATION_PLUGIN))
       {
         my_error(ER_PLUGIN_IS_NOT_LOADED, MYF(0), auth->plugin.str);
         goto end;
